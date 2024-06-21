@@ -287,7 +287,7 @@ void update()
     }
     // ball - pink collision
     //if (x_distance_pink < 0 && y_distance_pink < 0)
-    if (x_distance_pink < INIT_SCALE.x && y_distance_pink < (INIT_SCALE.y/2))
+    if (x_distance_pink < INIT_SCALE.x && y_distance_pink < (INIT_SCALE.y/4))
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
         g_ball_position.x += 0.1f;
@@ -299,7 +299,7 @@ void update()
     {
         g_ball_position.y -= 0.1f;
         g_ball_movement.y *= -1.0f;
-    } else if (g_ball_position.y <= -7.5f) {
+    } else if (g_ball_position.y <= 0) {
         g_ball_position.y += 0.1f;
         g_ball_movement.y *= -1.0f;
     }
