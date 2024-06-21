@@ -38,7 +38,8 @@ constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 
 constexpr char BLUE_SPRITE_FILEPATH[] = "assets/guyBlue.png",
 PINK_SPRITE_FILEPATH[] = "assets/guyPink.png",
-BALL_SPRITE_FILEPATH[] = "assets/ball.png";
+BALL_SPRITE_FILEPATH[] = "assets/ball.png",
+HIT_SPRITE_FILEPATH[] = "assets/ballAlt.png";
 
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
@@ -60,6 +61,7 @@ float g_previous_ticks = 0.0f;
 GLuint g_blue_texture_id;
 GLuint g_pink_texture_id;
 GLuint g_ball_texture_id;
+GLuint g_hit_texture_id;
 
 //glm::vec3 g_blue_position = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_blue_position = INIT_POS_BLUE;
@@ -76,6 +78,10 @@ glm::vec3 g_ball_spin = glm::vec3(0.0f, 0.0f, -1.0f); // bad naming, but this wi
 
 float g_blue_speed = 1.0f;  // move 1 unit per second
 float g_ball_speed = 1.0f;  // move 1 unit per second
+
+bool hit = false;
+int hitFrames = 0;
+constexpr int HIT_RECOVERY = 360;
 
 #define LOG(argument) std::cout << argument << '\n'
 void initialise();
@@ -158,6 +164,7 @@ void initialise()
     g_blue_texture_id = load_texture(BLUE_SPRITE_FILEPATH);
     g_pink_texture_id = load_texture(PINK_SPRITE_FILEPATH);
     g_ball_texture_id = load_texture(BALL_SPRITE_FILEPATH);
+    g_hit_texture_id = load_texture(HIT_SPRITE_FILEPATH);
 
     // enable blending
     glEnable(GL_BLEND);
@@ -250,6 +257,16 @@ void update()
     float delta_time = ticks - g_previous_ticks; // the delta time is the difference from the last frame
     g_previous_ticks = ticks;
 
+    if (hit && hitFrames < HIT_RECOVERY)
+    {
+        hitFrames++;
+    }
+    else if (hit && hitFrames >= HIT_RECOVERY)
+    {
+        hitFrames = 0;
+        hit = false;
+    }
+
     // Add direction * units per second * elapsed time
     g_blue_position += g_blue_movement * g_blue_speed * delta_time;
     g_pink_position += g_pink_movement * g_blue_speed * delta_time;
@@ -281,6 +298,7 @@ void update()
     if (x_distance_blue < INIT_SCALE.x && y_distance_blue < (INIT_SCALE.y/4)) // wtf is going on
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
+		hit = true;
         g_ball_position.x -= 0.1f;
         g_ball_movement.x *= -1.0f;
         g_ball_spin *= -1.0f;
@@ -290,6 +308,7 @@ void update()
     if (x_distance_pink < INIT_SCALE.x && y_distance_pink < (INIT_SCALE.y/4))
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
+		hit = true;
         g_ball_position.x += 0.1f;
         g_ball_movement.x *= -1.0f;
         g_ball_spin *= -1.0f;
@@ -297,9 +316,11 @@ void update()
     // ball - wall collision
     if (g_ball_position.y >= 7.5f)
     {
+		hit = true;
         g_ball_position.y -= 0.1f;
         g_ball_movement.y *= -1.0f;
     } else if (g_ball_position.y <= 0) {
+		hit = true;
         g_ball_position.y += 0.1f;
         g_ball_movement.y *= -1.0f;
     }
@@ -339,7 +360,13 @@ void render() {
     // Bind texture
     draw_object(g_blue_matrix, g_blue_texture_id);
     draw_object(g_pink_matrix, g_pink_texture_id);
-    draw_object(g_ball_matrix, g_ball_texture_id);
+    if (!hit)
+    {
+		draw_object(g_ball_matrix, g_ball_texture_id);
+    }
+    else {
+		draw_object(g_ball_matrix, g_hit_texture_id);
+    }
 
     // We disable two attribute arrays now
     glDisableVertexAttribArray(g_shader_program.get_position_attribute());
