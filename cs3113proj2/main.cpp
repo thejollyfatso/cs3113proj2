@@ -254,8 +254,8 @@ void update()
     float x_distance = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BLUE.x - g_blue_position.x) - ((INIT_SCALE.x + INIT_SCALE.x) / 2.0f);
     float y_distance = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BLUE.y - g_blue_position.y) - ((INIT_SCALE.y + INIT_SCALE.y) / 2.0f);
 
-    //if (check_collision(g_pink_position, g_blue_position))
-    if (x_distance < 0 && y_distance < 0)
+    //if (x_distance < 0 && y_distance < 0)
+    if (x_distance < (INIT_SCALE.x / 2) && y_distance < (INIT_SCALE.y / 2))
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
         g_blue_position.x -= 0.1f;
