@@ -278,7 +278,7 @@ void update()
 
     // ball - blue collision
     //if (x_distance < 0 && y_distance < 0)
-    if (x_distance_blue < INIT_SCALE.x && y_distance_blue < (INIT_SCALE.y/2))
+    if (x_distance_blue < INIT_SCALE.x && y_distance_blue < (INIT_SCALE.y/4)) // wtf is going on
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
         g_ball_position.x -= 0.1f;
