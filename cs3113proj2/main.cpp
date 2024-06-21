@@ -69,6 +69,7 @@ glm::vec3 g_ball_spin = glm::vec3(0.0f, 0.0f, -1.0f); // bad naming, but this wi
 
 
 float g_blue_speed = 1.0f;  // move 1 unit per second
+float g_ball_speed = 1.0f;  // move 1 unit per second
 
 #define LOG(argument) std::cout << argument << '\n'
 void initialise();
@@ -243,7 +244,7 @@ void update()
 
     // Add direction * units per second * elapsed time
     g_blue_position += g_blue_movement * g_blue_speed * delta_time;
-    g_ball_position += g_ball_movement * g_blue_speed * delta_time;
+    g_ball_position += g_ball_movement * g_ball_speed * delta_time;
     g_ball_rotation.z += 1.0f * delta_time;
 
     g_blue_matrix = glm::mat4(1.0f);
@@ -261,13 +262,23 @@ void update()
     float x_distance = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
     float y_distance = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
 
+    // ball - blue collision
     //if (x_distance < 0 && y_distance < 0)
-    if (x_distance < INIT_SCALE.x && y_distance < INIT_SCALE.y)
+    if (x_distance < INIT_SCALE.x && y_distance < (INIT_SCALE.y/2))
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
         g_ball_position.x -= 0.1f;
         g_ball_movement.x *= -1.0f;
         g_ball_spin *= -1.0f;
+    }
+    // ball - wall collision
+    if (g_ball_position.y >= 7.5f)
+    {
+        g_ball_position.y -= 0.1f;
+        g_ball_movement.y *= -1.0f;
+    } else if (g_ball_position.y <= 0.0f) {
+        //g_ball_position.y += 0.1f;
+        //g_ball_movement.y *= -1.0f;
     }
     g_blue_matrix = glm::scale(g_blue_matrix, INIT_SCALE);
     g_ball_matrix = glm::scale(g_ball_matrix, INIT_SCALE_BALL);
