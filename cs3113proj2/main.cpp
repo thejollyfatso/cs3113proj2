@@ -271,15 +271,26 @@ void update()
         g_ball_spin);
 
     /* COLLISION from lecture */
-    float x_distance = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
-    float y_distance = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
+    float x_distance_blue = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
+    float y_distance_blue = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
+    float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
+    float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
 
     // ball - blue collision
     //if (x_distance < 0 && y_distance < 0)
-    if (x_distance < INIT_SCALE.x && y_distance < (INIT_SCALE.y/2))
+    if (x_distance_blue < INIT_SCALE.x && y_distance_blue < (INIT_SCALE.y/2))
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
         g_ball_position.x -= 0.1f;
+        g_ball_movement.x *= -1.0f;
+        g_ball_spin *= -1.0f;
+    }
+    // ball - pink collision
+    //if (x_distance_pink < 0 && y_distance_pink < 0)
+    if (x_distance_pink < INIT_SCALE.x && y_distance_pink < (INIT_SCALE.y/2))
+    {
+        std::cout << std::time(nullptr) << ": Collision.\n";
+        g_ball_position.x += 0.1f;
         g_ball_movement.x *= -1.0f;
         g_ball_spin *= -1.0f;
     }
