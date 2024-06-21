@@ -22,7 +22,7 @@ constexpr int WINDOW_WIDTH = 640,
 WINDOW_HEIGHT = 480;
 
 constexpr float BG_RED = 0.1922f,
-BG_BLUE = 0.549f,
+BG_BALL = 0.549f,
 BG_GREEN = 0.9059f,
 BG_OPACITY = 1.0f;
 
@@ -37,13 +37,13 @@ F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 
 constexpr char PINK_SPRITE_FILEPATH[] = "assets/guyPink.png",
-BLUE_SPRITE_FILEPATH[] = "assets/ball.png";
+BALL_SPRITE_FILEPATH[] = "assets/ball.png";
 
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
 INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f),
 INIT_POS_PINK = glm::vec3(2.0f, 0.0f, 0.0f),
-INIT_POS_BLUE = glm::vec3(-4.0f, -4.0f, 0.0f);
+INIT_POS_BALL = glm::vec3(-4.0f, -4.0f, 0.0f);
 
 
 
@@ -51,7 +51,7 @@ SDL_Window* g_display_window;
 
 AppStatus g_app_status = RUNNING;
 ShaderProgram g_shader_program;
-glm::mat4 g_view_matrix, g_pink_matrix, g_projection_matrix, g_trans_matrix, g_blue_matrix;
+glm::mat4 g_view_matrix, g_pink_matrix, g_projection_matrix, g_trans_matrix, g_ball_matrix;
 
 float g_previous_ticks = 0.0f;
 
@@ -62,8 +62,9 @@ GLuint g_mahiro_texture_id;
 glm::vec3 g_pink_position = INIT_POS_PINK;
 glm::vec3 g_pink_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 g_blue_position = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 g_blue_movement = glm::vec3(1.0f, 1.0f, 0.0f);
+glm::vec3 g_ball_position = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_ball_movement = glm::vec3(1.0f, 1.0f, 0.0f);
+glm::vec3 g_ball_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 float g_pink_speed = 1.0f;  // move 1 unit per second
@@ -132,9 +133,9 @@ void initialise()
     g_shader_program.load(V_SHADER_PATH, F_SHADER_PATH);
 
     g_pink_matrix = glm::mat4(1.0f);
-    g_blue_matrix = glm::mat4(1.0f);
-    g_blue_matrix = glm::translate(g_blue_matrix, glm::vec3(1.0f, 1.0f, 0.0f));
-    g_blue_position += g_blue_movement;
+    g_ball_matrix = glm::mat4(1.0f);
+    g_ball_matrix = glm::translate(g_ball_matrix, glm::vec3(1.0f, 1.0f, 0.0f));
+    g_ball_position += g_ball_movement;
 
     g_view_matrix = glm::mat4(1.0f);  // Defines the position (location and orientation) of the camera
     g_projection_matrix = glm::ortho(-5.0f, 5.0f, -3.75f, 3.75f, -1.0f, 1.0f);  // Defines the characteristics of your camera, such as clip planes, field of view, projection method etc.
@@ -144,10 +145,10 @@ void initialise()
 
     glUseProgram(g_shader_program.get_program_id());
 
-    glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
+    glClearColor(BG_RED, BG_BALL, BG_GREEN, BG_OPACITY);
 
     g_pink_texture_id = load_texture(PINK_SPRITE_FILEPATH);
-    g_mahiro_texture_id = load_texture(BLUE_SPRITE_FILEPATH);
+    g_mahiro_texture_id = load_texture(BALL_SPRITE_FILEPATH);
 
     // enable blending
     glEnable(GL_BLEND);
@@ -241,29 +242,33 @@ void update()
 
     // Add direction * units per second * elapsed time
     g_pink_position += g_pink_movement * g_pink_speed * delta_time;
-    g_blue_position += g_blue_movement * g_pink_speed * delta_time;
+    g_ball_position += g_ball_movement * g_pink_speed * delta_time;
+    g_ball_rotation.z += 1.0f * delta_time;
 
     g_pink_matrix = glm::mat4(1.0f);
     g_pink_matrix = glm::translate(g_pink_matrix, g_pink_position);
 
-    g_blue_matrix = glm::mat4(1.0f);
-    g_blue_matrix = glm::translate(g_blue_matrix, g_blue_position);
+    g_ball_matrix = glm::mat4(1.0f);
+    g_ball_matrix = glm::translate(g_ball_matrix, g_ball_position);
 
-    g_blue_matrix = glm::translate(g_blue_matrix, INIT_POS_BLUE);
+    g_ball_matrix = glm::translate(g_ball_matrix, INIT_POS_BALL);
+    g_ball_matrix = glm::rotate(g_ball_matrix,
+        g_ball_rotation.z,
+        glm::vec3(0.0f, 0.0f, 1.0f));
 
     /* COLLISION from lecture */
-    float x_distance = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BLUE.x - g_blue_position.x) - ((INIT_SCALE.x + INIT_SCALE.x) / 2.0f);
-    float y_distance = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BLUE.y - g_blue_position.y) - ((INIT_SCALE.y + INIT_SCALE.y) / 2.0f);
+    float x_distance = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
+    float y_distance = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
 
     //if (x_distance < 0 && y_distance < 0)
     if (x_distance < (INIT_SCALE.x / 2) && y_distance < (INIT_SCALE.y / 2))
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
-        g_blue_position.x -= 0.1f;
-        g_blue_movement.x *= -1.0f;
+        g_ball_position.x -= 0.1f;
+        g_ball_movement.x *= -1.0f;
     }
     g_pink_matrix = glm::scale(g_pink_matrix, INIT_SCALE);
-    g_blue_matrix = glm::scale(g_blue_matrix, INIT_SCALE);
+    g_ball_matrix = glm::scale(g_ball_matrix, INIT_SCALE_BALL);
 }
 
 void draw_object(glm::mat4& object_model_matrix, GLuint& object_texture_id)
@@ -296,7 +301,7 @@ void render() {
 
     // Bind texture
     draw_object(g_pink_matrix, g_pink_texture_id);
-    draw_object(g_blue_matrix, g_mahiro_texture_id);
+    draw_object(g_ball_matrix, g_mahiro_texture_id);
 
     // We disable two attribute arrays now
     glDisableVertexAttribArray(g_shader_program.get_position_attribute());
