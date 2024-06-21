@@ -36,13 +36,13 @@ F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 
-constexpr char PINK_SPRITE_FILEPATH[] = "assets/guyPink.png",
+constexpr char BLUE_SPRITE_FILEPATH[] = "assets/guyBlue.png",
 BALL_SPRITE_FILEPATH[] = "assets/ball.png";
 
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
 INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f),
-INIT_POS_PINK = glm::vec3(2.0f, 0.0f, 0.0f),
+INIT_POS_BLUE = glm::vec3(3.0f, 0.0f, 0.0f),
 INIT_POS_BALL = glm::vec3(-4.0f, -4.0f, 0.0f);
 
 
@@ -51,23 +51,24 @@ SDL_Window* g_display_window;
 
 AppStatus g_app_status = RUNNING;
 ShaderProgram g_shader_program;
-glm::mat4 g_view_matrix, g_pink_matrix, g_projection_matrix, g_trans_matrix, g_ball_matrix;
+glm::mat4 g_view_matrix, g_blue_matrix, g_projection_matrix, g_trans_matrix, g_ball_matrix;
 
 float g_previous_ticks = 0.0f;
 
-GLuint g_pink_texture_id;
+GLuint g_blue_texture_id;
 GLuint g_mahiro_texture_id;
 
-//glm::vec3 g_pink_position = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 g_pink_position = INIT_POS_PINK;
-glm::vec3 g_pink_movement = glm::vec3(0.0f, 0.0f, 0.0f);
+//glm::vec3 g_blue_position = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_blue_position = INIT_POS_BLUE;
+glm::vec3 g_blue_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
 glm::vec3 g_ball_position = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_ball_movement = glm::vec3(1.0f, 1.0f, 0.0f);
 glm::vec3 g_ball_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_ball_spin = glm::vec3(0.0f, 0.0f, -1.0f); // bad naming, but this will be spin direction
 
 
-float g_pink_speed = 1.0f;  // move 1 unit per second
+float g_blue_speed = 1.0f;  // move 1 unit per second
 
 #define LOG(argument) std::cout << argument << '\n'
 void initialise();
@@ -132,7 +133,7 @@ void initialise()
 
     g_shader_program.load(V_SHADER_PATH, F_SHADER_PATH);
 
-    g_pink_matrix = glm::mat4(1.0f);
+    g_blue_matrix = glm::mat4(1.0f);
     g_ball_matrix = glm::mat4(1.0f);
     g_ball_matrix = glm::translate(g_ball_matrix, glm::vec3(1.0f, 1.0f, 0.0f));
     g_ball_position += g_ball_movement;
@@ -147,7 +148,7 @@ void initialise()
 
     glClearColor(BG_RED, BG_BALL, BG_GREEN, BG_OPACITY);
 
-    g_pink_texture_id = load_texture(PINK_SPRITE_FILEPATH);
+    g_blue_texture_id = load_texture(BLUE_SPRITE_FILEPATH);
     g_mahiro_texture_id = load_texture(BALL_SPRITE_FILEPATH);
 
     // enable blending
@@ -158,7 +159,7 @@ void initialise()
 void process_input()
 {
     // VERY IMPORTANT: If nothing is pressed, we don't want to go anywhere
-    g_pink_movement = glm::vec3(0.0f);
+    g_blue_movement = glm::vec3(0.0f);
 
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -180,7 +181,7 @@ void process_input()
 
             case SDLK_RIGHT:
                 // Move the player right
-                g_pink_movement.x = 1.0f;
+                //g_blue_movement.x = 1.0f;
                 break;
 
             case SDLK_q:
@@ -200,29 +201,29 @@ void process_input()
 
     const Uint8* key_state = SDL_GetKeyboardState(NULL);
 
-    if (key_state[SDL_SCANCODE_LEFT])
+    if (key_state[SDL_SCANCODE_W])
     {
-        g_pink_movement.x = -1.0f;
+        g_blue_movement.y = -1.0f;
     }
-    else if (key_state[SDL_SCANCODE_RIGHT])
+    else if (key_state[SDL_SCANCODE_S])
     {
-        g_pink_movement.x = 1.0f;
+        g_blue_movement.y = 1.0f;
     }
 
     if (key_state[SDL_SCANCODE_UP])
     {
-        g_pink_movement.y = 1.0f;
+        g_blue_movement.y = 1.0f;
     }
     else if (key_state[SDL_SCANCODE_DOWN])
     {
-        g_pink_movement.y = -1.0f;
+        g_blue_movement.y = -1.0f;
     }
 
     // This makes sure that the player can't "cheat" their way into moving
     // faster
-    if (glm::length(g_pink_movement) > 1.0f)
+    if (glm::length(g_blue_movement) > 1.0f)
     {
-        g_pink_movement = glm::normalize(g_pink_movement);
+        g_blue_movement = glm::normalize(g_blue_movement);
     }
 }
 
@@ -241,12 +242,12 @@ void update()
     g_previous_ticks = ticks;
 
     // Add direction * units per second * elapsed time
-    g_pink_position += g_pink_movement * g_pink_speed * delta_time;
-    g_ball_position += g_ball_movement * g_pink_speed * delta_time;
+    g_blue_position += g_blue_movement * g_blue_speed * delta_time;
+    g_ball_position += g_ball_movement * g_blue_speed * delta_time;
     g_ball_rotation.z += 1.0f * delta_time;
 
-    g_pink_matrix = glm::mat4(1.0f);
-    g_pink_matrix = glm::translate(g_pink_matrix, g_pink_position);
+    g_blue_matrix = glm::mat4(1.0f);
+    g_blue_matrix = glm::translate(g_blue_matrix, g_blue_position);
 
     g_ball_matrix = glm::mat4(1.0f);
     g_ball_matrix = glm::translate(g_ball_matrix, g_ball_position);
@@ -254,20 +255,21 @@ void update()
     g_ball_matrix = glm::translate(g_ball_matrix, INIT_POS_BALL);
     g_ball_matrix = glm::rotate(g_ball_matrix,
         g_ball_rotation.z,
-        glm::vec3(0.0f, 0.0f, 1.0f));
+        g_ball_spin);
 
     /* COLLISION from lecture */
-    float x_distance = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
-    float y_distance = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
+    float x_distance = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
+    float y_distance = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
 
     //if (x_distance < 0 && y_distance < 0)
-    if (x_distance < (INIT_SCALE.x / 2) && y_distance < (INIT_SCALE.y / 2))
+    if (x_distance < INIT_SCALE.x && y_distance < INIT_SCALE.y)
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
         g_ball_position.x -= 0.1f;
         g_ball_movement.x *= -1.0f;
+        g_ball_spin *= -1.0f;
     }
-    g_pink_matrix = glm::scale(g_pink_matrix, INIT_SCALE);
+    g_blue_matrix = glm::scale(g_blue_matrix, INIT_SCALE);
     g_ball_matrix = glm::scale(g_ball_matrix, INIT_SCALE_BALL);
 }
 
@@ -300,7 +302,7 @@ void render() {
     glEnableVertexAttribArray(g_shader_program.get_tex_coordinate_attribute());
 
     // Bind texture
-    draw_object(g_pink_matrix, g_pink_texture_id);
+    draw_object(g_blue_matrix, g_blue_texture_id);
     draw_object(g_ball_matrix, g_mahiro_texture_id);
 
     // We disable two attribute arrays now
