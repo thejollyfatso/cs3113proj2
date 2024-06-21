@@ -37,10 +37,11 @@ F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 constexpr float MILLISECONDS_IN_SECOND = 1000.0;
 
 constexpr char PINK_SPRITE_FILEPATH[] = "assets/guyPink.png",
-BLUE_SPRITE_FILEPATH[] = "assets/guyBlue.png";
+BLUE_SPRITE_FILEPATH[] = "assets/ball.png";
 
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
+INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f),
 INIT_POS_PINK = glm::vec3(2.0f, 0.0f, 0.0f),
 INIT_POS_BLUE = glm::vec3(-4.0f, -4.0f, 0.0f);
 
@@ -109,7 +110,7 @@ GLuint load_texture(const char* filepath)
 void initialise()
 {
     SDL_Init(SDL_INIT_VIDEO);
-    g_display_window = SDL_CreateWindow("Hello, Collllliiiiisssssssiiiiiiooooooonnnnnnssssssssss!",
+    g_display_window = SDL_CreateWindow("Pawng",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
