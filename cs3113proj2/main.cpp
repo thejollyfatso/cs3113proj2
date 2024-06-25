@@ -293,15 +293,15 @@ void update()
 
     /* COLLISION from lecture */
     /*
-    float x_distance_blue = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
-    float y_distance_blue = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
-    float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
-    float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
+    float x_distance_blue = fabs(g_blue_position.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 3.0f);
+    float y_distance_blue = fabs(g_blue_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
+    float x_distance_pink = fabs(g_pink_position.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.7f);
+    float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
     */
-    float x_distance_blue = fabs(g_blue_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 3.0f);
-    float y_distance_blue = fabs(g_blue_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
-    float x_distance_pink = fabs(g_pink_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.7f);
-    float y_distance_pink = fabs(g_pink_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
+    float x_distance_blue = fabs(g_blue_position.x - INIT_SCALE.x/4 - g_ball_position.x) - ((INIT_SCALE.x/4 + INIT_SCALE_BALL.x) / 3.0f);
+    float y_distance_blue = fabs(g_blue_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
+    float x_distance_pink = fabs(g_pink_position.x + INIT_SCALE.x/4 - g_ball_position.x) - ((INIT_SCALE.x/4 + INIT_SCALE_BALL.x) / 2.7f);
+    float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
 
     // ball - blue collision
     if (x_distance_blue < 0 && y_distance_blue < 0)
