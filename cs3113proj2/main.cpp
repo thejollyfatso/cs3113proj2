@@ -46,7 +46,7 @@ constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
 INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f),
 INIT_POS_BLUE = glm::vec3(3.0f, 0.0f, 0.0f),
 INIT_POS_PINK = glm::vec3(-3.0f, 0.0f, 0.0f),
-INIT_POS_BALL = glm::vec3(-4.0f, -4.0f, 0.0f);
+INIT_POS_BALL = glm::vec3(-2.0f, -2.0f, 0.0f);
 
 
 
@@ -89,6 +89,9 @@ void process_input();
 void update();
 void render();
 void shutdown();
+
+float clamp(float value, float min, float max);
+bool checkBoxCircleCollision(const glm::vec3& boxCenter, float boxHalfWidth, float boxHalfHeight, const glm::vec3& circleCenter, float circleRadius);
 
 constexpr int NUMBER_OF_TEXTURES = 1; // to be generated, that is
 constexpr GLint LEVEL_OF_DETAIL = 0;  // base image level; Level n is the nth mipmap reduction image
@@ -288,14 +291,19 @@ void update()
         g_ball_spin);
 
     /* COLLISION from lecture */
+    /*
     float x_distance_blue = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
     float y_distance_blue = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
     float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
     float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
+    */
+    float x_distance_blue = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 1.0f);
+    float y_distance_blue = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.2f);
+    float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 1.0f);
+    float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.2f);
 
     // ball - blue collision
-    //if (x_distance < 0 && y_distance < 0)
-    if (x_distance_blue < INIT_SCALE.x && y_distance_blue < (INIT_SCALE.y/4)) // wtf is going on
+    if (x_distance_blue < 0 && y_distance_blue < 0)
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
 		hit = true;
@@ -304,8 +312,7 @@ void update()
         g_ball_spin *= -1.0f;
     }
     // ball - pink collision
-    //if (x_distance_pink < 0 && y_distance_pink < 0)
-    if (x_distance_pink < INIT_SCALE.x && y_distance_pink < (INIT_SCALE.y/4))
+    if (x_distance_pink < 0 && y_distance_pink < 0)
     {
         std::cout << std::time(nullptr) << ": Collision.\n";
 		hit = true;
@@ -314,12 +321,12 @@ void update()
         g_ball_spin *= -1.0f;
     }
     // ball - wall collision
-    if (g_ball_position.y >= 7.5f)
+    if (g_ball_position.y + INIT_POS_BALL.y + INIT_SCALE_BALL.y/2 >= 3.75f)
     {
 		hit = true;
         g_ball_position.y -= 0.1f;
         g_ball_movement.y *= -1.0f;
-    } else if (g_ball_position.y <= 0) {
+    } else if (g_ball_position.y + INIT_POS_BALL.y - INIT_SCALE_BALL.y/2 <= -3.75f) {
 		hit = true;
         g_ball_position.y += 0.1f;
         g_ball_movement.y *= -1.0f;
@@ -376,6 +383,38 @@ void render() {
 }
 
 void shutdown() { SDL_Quit(); }
+
+#include <cmath>
+
+// Struct to represent a 2D vector or point
+struct Vec2 {
+    float x, y;
+};
+
+// Function to clamp a value between min and max, helper function to find closest point on box to circle
+float clamp(float value, float min, float max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+// Function to check box-circle collision
+bool checkBoxCircleCollision(const glm::vec3& boxCenter, float boxWidth, float boxHeight, const glm::vec3& circleCenter, float circleRadius) {
+    // Find the closest point on the box to the circle
+    float closestX = clamp(circleCenter.x, boxCenter.x - boxWidth/2, boxCenter.x + boxWidth/2);
+    float closestY = clamp(circleCenter.y, boxCenter.y - boxHeight/2, boxCenter.y + boxHeight/2);
+
+    // Calculate the distance from the circle's center to the closest point
+    float distanceX = circleCenter.x - closestX;
+    float distanceY = circleCenter.y - closestY;
+
+    // Calculate the squared distance and compare with squared radius
+    float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+    float radiusSquared = circleRadius * circleRadius;
+
+    return distanceSquared <= radiusSquared;
+}
+
 
 
 int main(int argc, char* argv[])
