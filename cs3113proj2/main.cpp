@@ -44,12 +44,6 @@ HIT_SPRITE_FILEPATH[] = "assets/ballAlt.png";
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
 INIT_SCALE_BALL = glm::vec3(1.0f, 1.0f, 0.0f);
-/*
-INIT_POS_BLUE = glm::vec3(3.0f, 0.0f, 0.0f),
-INIT_POS_PINK = glm::vec3(-3.0f, 0.0f, 0.0f),
-INIT_POS_BALL = glm::vec3(-2.0f, -2.0f, 0.0f);
-*/
-
 
 
 SDL_Window* g_display_window;
@@ -65,7 +59,6 @@ GLuint g_pink_texture_id;
 GLuint g_ball_texture_id;
 GLuint g_hit_texture_id;
 
-//glm::vec3 g_blue_position = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_blue_position = glm::vec3(3.5f, 0.0f, 0.0f);
 glm::vec3 g_blue_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -304,13 +297,6 @@ void update()
         g_ball_rotation.z,
         g_ball_spin);
 
-    /* COLLISION from lecture */
-    /*
-    float x_distance_blue = fabs(g_blue_position.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 3.0f);
-    float y_distance_blue = fabs(g_blue_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
-    float x_distance_pink = fabs(g_pink_position.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.7f);
-    float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
-    */
     int collision_box_scale = 12; // restricts collision to the field side of the player, instead of a box a bar
     float x_distance_blue = fabs(g_blue_position.x - ((collision_box_scale/2 - 2)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 3.0f);
     float y_distance_blue = fabs(g_blue_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
@@ -362,11 +348,11 @@ void update()
         g_blue_movement.y *= -1.0f;
     }
     // pink - wall collision
-    if (g_pink_position.y + INIT_SCALE.y/2.7 >= 3.75f)
+    if (g_pink_position.y + INIT_SCALE.y/2.4 >= 3.75f)
     {
         g_pink_position.y -= 0.1f;
         g_pink_movement.y *= -1.0f;
-    } else if (g_pink_position.y - INIT_SCALE.y/2.7 <= -3.75f) {
+    } else if (g_pink_position.y - INIT_SCALE.y/2.4 <= -3.75f) {
         g_pink_position.y += 0.1f;
         g_pink_movement.y *= -1.0f;
     }
