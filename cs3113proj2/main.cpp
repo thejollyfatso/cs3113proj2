@@ -43,7 +43,7 @@ HIT_SPRITE_FILEPATH[] = "assets/ballAlt.png";
 
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
-INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f);
+INIT_SCALE_BALL = glm::vec3(1.0f, 1.0f, 0.0f);
 /*
 INIT_POS_BLUE = glm::vec3(3.0f, 0.0f, 0.0f),
 INIT_POS_PINK = glm::vec3(-3.0f, 0.0f, 0.0f),
@@ -78,7 +78,7 @@ glm::vec3 g_ball_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_ball_spin = glm::vec3(0.0f, 0.0f, -1.0f); // bad naming, but this will be spin direction
 
 
-float g_blue_speed = 1.0f;  // move 1 unit per second
+float g_blue_speed = 1.6f;  // move 1.6 unit per second
 float g_ball_speed = 1.0f;  // move 1 unit per second
 
 bool hit = false;
@@ -298,10 +298,10 @@ void update()
     float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
     float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
     */
-    float x_distance_blue = fabs(g_blue_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.4f);
-    float y_distance_blue = fabs(g_blue_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.4f);
-    float x_distance_pink = fabs(g_pink_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.4f);
-    float y_distance_pink = fabs(g_pink_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.4f);
+    float x_distance_blue = fabs(g_blue_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 3.0f);
+    float y_distance_blue = fabs(g_blue_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
+    float x_distance_pink = fabs(g_pink_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.7f);
+    float y_distance_pink = fabs(g_pink_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
 
     // ball - blue collision
     if (x_distance_blue < 0 && y_distance_blue < 0)
