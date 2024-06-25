@@ -85,6 +85,8 @@ bool hit = false;
 int hitFrames = 0;
 constexpr int HIT_RECOVERY = 360;
 
+bool playerTwo = true;
+
 #define LOG(argument) std::cout << argument << '\n'
 void initialise();
 void process_input();
@@ -205,6 +207,11 @@ void process_input()
                 //g_blue_movement.x = 1.0f;
                 break;
 
+            case SDLK_t:
+                // Quit the game with a keystroke
+                playerTwo = !playerTwo;
+                break;
+
             case SDLK_q:
                 // Quit the game with a keystroke
                 g_app_status = TERMINATED;
@@ -233,11 +240,17 @@ void process_input()
 
     if (key_state[SDL_SCANCODE_UP])
     {
-        g_blue_movement.y = 1.0f;
+        if (playerTwo)
+        { 
+			g_blue_movement.y = 1.0f;
+        }
     }
     else if (key_state[SDL_SCANCODE_DOWN])
     {
-        g_blue_movement.y = -1.0f;
+        if (playerTwo)
+        {
+            g_blue_movement.y = -1.0f;
+        }
     }
 
     // This makes sure that the player can't "cheat" their way into moving
