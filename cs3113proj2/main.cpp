@@ -71,7 +71,7 @@ glm::vec3 g_ball_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_ball_spin = glm::vec3(0.0f, 0.0f, -1.0f); // bad naming, but this will be spin direction
 
 
-float g_blue_speed = 1.6f;  // move 1.6 unit per second
+float g_blue_speed = 2.4f;  // move 1.6 unit per second
 float g_ball_speed = 1.0f;  // move 1 unit per second
 
 bool hit = false;
