@@ -298,10 +298,10 @@ void update()
     float x_distance_pink = fabs(g_pink_position.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.7f);
     float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
     */
-    int collision_box_scale = 4; // restricts collision to the field side of the player, instead of a box a bar
-    float x_distance_blue = fabs(g_blue_position.x - ((collision_box_scale/2 - 1)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 3.0f);
+    int collision_box_scale = 12; // restricts collision to the field side of the player, instead of a box a bar
+    float x_distance_blue = fabs(g_blue_position.x - ((collision_box_scale/2 - 2)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 3.0f);
     float y_distance_blue = fabs(g_blue_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
-    float x_distance_pink = fabs(g_pink_position.x + ((collision_box_scale/2 - 1)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 2.7f);
+    float x_distance_pink = fabs(g_pink_position.x + ((collision_box_scale/2 - 2)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 2.7f);
     float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
 
     // ball - blue collision
@@ -332,6 +332,28 @@ void update()
 		hit = true;
         g_ball_position.y += 0.1f;
         g_ball_movement.y *= -1.0f;
+    }
+    // blue - wall collision
+    if (g_blue_position.y + INIT_SCALE.y/3.0 >= 3.75f)
+    {
+		hit = true;
+        g_blue_position.y -= 0.1f;
+        g_blue_movement.y *= -1.0f;
+    } else if (g_blue_position.y - INIT_SCALE.y/3.0 <= -3.75f) {
+		hit = true;
+        g_blue_position.y += 0.1f;
+        g_blue_movement.y *= -1.0f;
+    }
+    // pink - wall collision
+    if (g_pink_position.y + INIT_SCALE.y/2.7 >= 3.75f)
+    {
+		hit = true;
+        g_pink_position.y -= 0.1f;
+        g_pink_movement.y *= -1.0f;
+    } else if (g_pink_position.y - INIT_SCALE.y/2.7 <= -3.75f) {
+		hit = true;
+        g_pink_position.y += 0.1f;
+        g_pink_movement.y *= -1.0f;
     }
     g_blue_matrix = glm::scale(g_blue_matrix, INIT_SCALE);
     g_pink_matrix = glm::scale(g_pink_matrix, INIT_SCALE);
