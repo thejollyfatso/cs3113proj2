@@ -333,6 +333,12 @@ void update()
         g_ball_position.y += 0.1f;
         g_ball_movement.y *= -1.0f;
     }
+    if (g_ball_position.x - INIT_SCALE_BALL.x/2.0 >= 5.0f)
+    {
+		g_app_status = TERMINATED;
+    } else if (g_ball_position.x + INIT_SCALE_BALL.x/2.0 <= -5.0f) {
+		g_app_status = TERMINATED;
+    }
     // blue - wall collision
     if (g_blue_position.y + INIT_SCALE.y/3.0 >= 3.75f)
     {
