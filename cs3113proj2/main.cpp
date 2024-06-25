@@ -298,9 +298,10 @@ void update()
     float x_distance_pink = fabs(g_pink_position.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.7f);
     float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
     */
-    float x_distance_blue = fabs(g_blue_position.x - INIT_SCALE.x/4 - g_ball_position.x) - ((INIT_SCALE.x/4 + INIT_SCALE_BALL.x) / 3.0f);
+    int collision_box_scale = 4; // restricts collision to the field side of the player, instead of a box a bar
+    float x_distance_blue = fabs(g_blue_position.x - ((collision_box_scale/2 - 1)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 3.0f);
     float y_distance_blue = fabs(g_blue_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
-    float x_distance_pink = fabs(g_pink_position.x + INIT_SCALE.x/4 - g_ball_position.x) - ((INIT_SCALE.x/4 + INIT_SCALE_BALL.x) / 2.7f);
+    float x_distance_pink = fabs(g_pink_position.x + ((collision_box_scale/2 - 1)*INIT_SCALE.x/collision_box_scale) - g_ball_position.x) - ((INIT_SCALE.x/collision_box_scale + INIT_SCALE_BALL.x) / 2.7f);
     float y_distance_pink = fabs(g_pink_position.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.7f);
 
     // ball - blue collision
