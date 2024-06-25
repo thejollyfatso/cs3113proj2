@@ -43,10 +43,12 @@ HIT_SPRITE_FILEPATH[] = "assets/ballAlt.png";
 
 constexpr float MINIMUM_COLLISION_DISTANCE = 1.0f;
 constexpr glm::vec3 INIT_SCALE = glm::vec3(2.5f, 2.5f, 0.0f),
-INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f),
+INIT_SCALE_BALL = glm::vec3(1.5f, 1.5f, 0.0f);
+/*
 INIT_POS_BLUE = glm::vec3(3.0f, 0.0f, 0.0f),
 INIT_POS_PINK = glm::vec3(-3.0f, 0.0f, 0.0f),
 INIT_POS_BALL = glm::vec3(-2.0f, -2.0f, 0.0f);
+*/
 
 
 
@@ -64,13 +66,13 @@ GLuint g_ball_texture_id;
 GLuint g_hit_texture_id;
 
 //glm::vec3 g_blue_position = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 g_blue_position = INIT_POS_BLUE;
+glm::vec3 g_blue_position = glm::vec3(3.0f, 0.0f, 0.0f);
 glm::vec3 g_blue_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 g_pink_position = INIT_POS_PINK;
+glm::vec3 g_pink_position = glm::vec3(-3.0f, 0.0f, 0.0f);
 glm::vec3 g_pink_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 g_ball_position = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_ball_position = glm::vec3(-2.0f, -2.0f, 0.0f);
 glm::vec3 g_ball_movement = glm::vec3(1.0f, 1.0f, 0.0f);
 glm::vec3 g_ball_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_ball_spin = glm::vec3(0.0f, 0.0f, -1.0f); // bad naming, but this will be spin direction
@@ -285,7 +287,6 @@ void update()
     g_ball_matrix = glm::mat4(1.0f);
     g_ball_matrix = glm::translate(g_ball_matrix, g_ball_position);
 
-    g_ball_matrix = glm::translate(g_ball_matrix, INIT_POS_BALL);
     g_ball_matrix = glm::rotate(g_ball_matrix,
         g_ball_rotation.z,
         g_ball_spin);
@@ -297,10 +298,10 @@ void update()
     float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.0f);
     float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.0f);
     */
-    float x_distance_blue = fabs(g_blue_position.x + INIT_POS_BLUE.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 1.0f);
-    float y_distance_blue = fabs(g_blue_position.y + INIT_POS_BLUE.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.2f);
-    float x_distance_pink = fabs(g_pink_position.x + INIT_POS_PINK.x - INIT_POS_BALL.x - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 1.0f);
-    float y_distance_pink = fabs(g_pink_position.y + INIT_POS_PINK.y - INIT_POS_BALL.y - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.2f);
+    float x_distance_blue = fabs(g_blue_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.4f);
+    float y_distance_blue = fabs(g_blue_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.4f);
+    float x_distance_pink = fabs(g_pink_position.x + - g_ball_position.x) - ((INIT_SCALE.x + INIT_SCALE_BALL.x) / 2.4f);
+    float y_distance_pink = fabs(g_pink_position.y + - g_ball_position.y) - ((INIT_SCALE.y + INIT_SCALE_BALL.y) / 2.4f);
 
     // ball - blue collision
     if (x_distance_blue < 0 && y_distance_blue < 0)
@@ -321,12 +322,12 @@ void update()
         g_ball_spin *= -1.0f;
     }
     // ball - wall collision
-    if (g_ball_position.y + INIT_POS_BALL.y + INIT_SCALE_BALL.y/2 >= 3.75f)
+    if (g_ball_position.y + INIT_SCALE_BALL.y/2.4 >= 3.75f)
     {
 		hit = true;
         g_ball_position.y -= 0.1f;
         g_ball_movement.y *= -1.0f;
-    } else if (g_ball_position.y + INIT_POS_BALL.y - INIT_SCALE_BALL.y/2 <= -3.75f) {
+    } else if (g_ball_position.y - INIT_SCALE_BALL.y/2.4 <= -3.75f) {
 		hit = true;
         g_ball_position.y += 0.1f;
         g_ball_movement.y *= -1.0f;
