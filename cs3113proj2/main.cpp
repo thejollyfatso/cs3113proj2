@@ -60,7 +60,7 @@ GLuint g_ball_texture_id;
 GLuint g_hit_texture_id;
 
 glm::vec3 g_blue_position = glm::vec3(3.5f, 0.0f, 0.0f);
-glm::vec3 g_blue_movement = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_blue_movement = glm::vec3(0.0f, 1.0f, 0.0f);
 
 glm::vec3 g_pink_position = glm::vec3(-3.5f, 0.0f, 0.0f);
 glm::vec3 g_pink_movement = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -174,7 +174,7 @@ void initialise()
 void process_input()
 {
     // VERY IMPORTANT: If nothing is pressed, we don't want to go anywhere
-    g_blue_movement = glm::vec3(0.0f);
+    if (playerTwo) g_blue_movement = glm::vec3(0.0f);
     g_pink_movement = glm::vec3(0.0f);
 
     SDL_Event event;
@@ -203,6 +203,10 @@ void process_input()
             case SDLK_t:
                 // Quit the game with a keystroke
                 playerTwo = !playerTwo;
+                if (!playerTwo)
+                {
+                    g_blue_movement.y = 1.0f;
+                }
                 break;
 
             case SDLK_q:
