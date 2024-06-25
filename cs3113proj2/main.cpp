@@ -66,10 +66,10 @@ GLuint g_ball_texture_id;
 GLuint g_hit_texture_id;
 
 //glm::vec3 g_blue_position = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 g_blue_position = glm::vec3(3.0f, 0.0f, 0.0f);
+glm::vec3 g_blue_position = glm::vec3(3.5f, 0.0f, 0.0f);
 glm::vec3 g_blue_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 g_pink_position = glm::vec3(-3.0f, 0.0f, 0.0f);
+glm::vec3 g_pink_position = glm::vec3(-3.5f, 0.0f, 0.0f);
 glm::vec3 g_pink_movement = glm::vec3(0.0f, 0.0f, 0.0f);
 
 glm::vec3 g_ball_position = glm::vec3(-2.0f, -2.0f, 0.0f);
@@ -336,22 +336,18 @@ void update()
     // blue - wall collision
     if (g_blue_position.y + INIT_SCALE.y/3.0 >= 3.75f)
     {
-		hit = true;
         g_blue_position.y -= 0.1f;
         g_blue_movement.y *= -1.0f;
     } else if (g_blue_position.y - INIT_SCALE.y/3.0 <= -3.75f) {
-		hit = true;
         g_blue_position.y += 0.1f;
         g_blue_movement.y *= -1.0f;
     }
     // pink - wall collision
     if (g_pink_position.y + INIT_SCALE.y/2.7 >= 3.75f)
     {
-		hit = true;
         g_pink_position.y -= 0.1f;
         g_pink_movement.y *= -1.0f;
     } else if (g_pink_position.y - INIT_SCALE.y/2.7 <= -3.75f) {
-		hit = true;
         g_pink_position.y += 0.1f;
         g_pink_movement.y *= -1.0f;
     }
